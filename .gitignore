@@ -1,0 +1,15 @@
+# Build artifacts
+zhiruntong-site.zip
+docs/screenshots/
+
+# Internal build brief — contains superseded brand details, kept local only
+SPEC.txt
+tihuan.txt
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.vscode/
+.idea/

@@ -1,0 +1,111 @@
+# ==========================================================================
+# HK ZANVIX CO., LIMITED — Apache configuration
+# ==========================================================================
+
+# --------------------------------------------------------------------------
+# 1. DEFAULT DOCUMENT SET
+# --------------------------------------------------------------------------
+DirectoryIndex index.html index.php
+
+# --------------------------------------------------------------------------
+# 2. CANONICAL HOST + FORCE HTTPS
+# --------------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Redirect to the canonical hostname (www -> apex), preserving the path
+  RewriteCond %{HTTP_HOST} ^www\.zhiruntong\.com$ [NC]
+  RewriteRule ^ https://zhiruntong.com%{REQUEST_URI} [L,R=301]
+
+  # Force HTTPS for every request
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
+  RewriteRule ^ https://zhiruntong.com%{REQUEST_URI} [L,R=301]
+
+  # Strip the trailing slash from directory-style URLs
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.+)/$ /$1 [L,R=301]
+</IfModule>
+
+# --------------------------------------------------------------------------
+# 3. INDEX.HTML -> / (301, keeps index.html out of the public URL)
+# --------------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+  RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
+  RewriteRule ^index\.html$ / [R=301,L]
+</IfModule>
+
+# --------------------------------------------------------------------------
+# 4. CUSTOM 404
+# --------------------------------------------------------------------------
+ErrorDocument 404 /404.html
+
+# --------------------------------------------------------------------------
+# 5. GZIP COMPRESSION
+# --------------------------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+  AddOutputFilterByType DEFLATE application/javascript application/x-javascript
+  AddOutputFilterByType DEFLATE application/json application/xml application/rss+xml
+  AddOutputFilterByType DEFLATE image/svg+xml application/font-woff application/font-woff2
+  AddOutputFilterByType DEFLATE image/x-icon image/vnd.microsoft.icon
+</IfModule>
+
+# --------------------------------------------------------------------------
+# 6. CACHE HEADERS
+# --------------------------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault                          "access plus 1 week"
+  ExpiresByType text/html                 "access plus 1 hour"
+  ExpiresByType text/css                  "access plus 1 year"
+  ExpiresByType application/javascript    "access plus 1 year"
+  ExpiresByType application/json          "access plus 1 year"
+  ExpiresByType image/png                 "access plus 1 year"
+  ExpiresByType image/jpeg                "access plus 1 year"
+  ExpiresByType image/gif                 "access plus 1 year"
+  ExpiresByType image/webp                "access plus 1 year"
+  ExpiresByType image/svg+xml             "access plus 1 year"
+  ExpiresByType image/x-icon              "access plus 1 year"
+  ExpiresByType font/woff2                "access plus 1 year"
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(css|js|jpg|jpeg|png|gif|webp|svg|ico|woff|woff2|ttf|eot)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+  # Security headers
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>
+
+# --------------------------------------------------------------------------
+# 7. MIME TYPES FOR MODERN ASSETS
+# --------------------------------------------------------------------------
+<IfModule mod_mime.c>
+  AddType image/svg+xml            .svg
+  AddType image/webp               .webp
+  AddType font/woff2               .woff2
+  AddType application/manifest+json .webmanifest
+</IfModule>
+
+# --------------------------------------------------------------------------
+# 8. BLOCK SENSITIVE FILES
+# --------------------------------------------------------------------------
+<FilesMatch "^\.(htaccess|htpasswd|env|git|env\.local)$">
+  Require all denied
+</FilesMatch>
+
+# Build tooling and source documents are not part of the public site
+<FilesMatch "^(SPEC\.txt|tihuan\.txt)$">
+  Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+  RewriteRule ^docs(?:/|$) - [F,L]
+</IfModule>
