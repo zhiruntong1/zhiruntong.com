@@ -13,7 +13,7 @@ const path = require('path');
 const os = require('os');
 
 const ROOT = path.resolve(__dirname, '..');
-const OUT = path.join(ROOT, 'docs', 'screenshots');
+const OUT = path.join(ROOT, '_tools', 'screenshots');
 fs.mkdirSync(OUT, { recursive: true });
 const CHROME = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const PORT = 9333;

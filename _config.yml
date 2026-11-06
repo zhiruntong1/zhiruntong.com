@@ -1,0 +1,16 @@
+# GitHub Pages (legacy Jekyll build) configuration.
+#
+# GitHub Pages publishes whatever Jekyll produces, so anything not listed
+# here becomes a public URL. This site should publish the site itself and
+# nothing else.
+#
+# The build tooling lives in _tools/, which Jekyll excludes by default
+# (directories beginning with an underscore are never copied).
+exclude:
+  - .htaccess          # Apache-only rules; GitHub Pages serves via Fastly and ignores it
+  - zhiruntong-site.zip
+  - SPEC.txt
+  - tihuan.txt
+  - README.md
+
+# The repository root is the site root — no subpath baseurl.

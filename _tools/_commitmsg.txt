@@ -1,0 +1,9 @@
+Publish only the site itself
+
+GitHub Pages' legacy Jekyll build publishes everything in the repository
+root, so the build tooling under docs/ and the Apache-only .htaccess were
+both reachable as public URLs.
+
+Renamed docs/ to _tools/ (Jekyll excludes underscore-prefixed directories
+by default), added a _config.yml that excludes .htaccess and the local
+archive, and updated the responsive checker to its new location.
